@@ -67,7 +67,24 @@
   [snake new-dir]
     (assoc snake :dir new-dir))
 
-(defn hello []
-  (println "Hello, world!"))
+(defn reset
+  "Resets the game"
+  [snake apple]
+    (dosync (ref-set apple (create-apple))
+            (ref-set snake (create-snake)))
+  nil)
 
-; TODO: implement the Snake!
+(defn update-direction
+  "Updates the direction of the given snake"
+  [snake newdir]
+    (dosync (when newdir (alter snake turn newdir))))
+
+(defn update-positions
+  "Updates the positions of the snake depending on apple"
+  [snake apple]
+    (dosync
+      (if (eats? @snake @apple)
+        (do (ref-set apple (create-apple))
+            (alter snake move-snake :grow))
+        (alter snake move-snake)))
+    nil)
