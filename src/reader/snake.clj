@@ -55,7 +55,19 @@
   [{[head & body] :body}]
     (contains? (set body) head))
 
-(def lose? head-overlaps-body?)
+(defn out-of-bounds?
+  "Returns whether or not the snake has left the game window"
+  [{[snake-head] :body}]
+    (or (< (snake-head 0) 0)
+        (> (snake-head 0) width)
+        (< (snake-head 1) 0)
+        (> (snake-head 1) height)))
+
+(defn lose?
+  "Whether or not the player has lost the game"
+  [snake]
+    (or (head-overlaps-body? snake)
+        (out-of-bounds? snake)))
 
 (defn eats?
   "Whether or not the snake is eating an apple this tick"
@@ -149,3 +161,4 @@
         (.setVisible true))
       (.start timer)
       [snake apple timer]))
+
